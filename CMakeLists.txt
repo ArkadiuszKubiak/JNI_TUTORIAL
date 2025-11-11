@@ -42,12 +42,8 @@ set_target_properties(greetings PROPERTIES
 )
 
 # ==================== COMPILATION FLAGS ====================
-# Add compiler warnings and optimization flags for Unix-like systems
-if(UNIX)
-    target_compile_options(greetings PRIVATE -Wall -Wextra -O2)
-endif()
-
-# Add compiler warnings for MSVC (Windows)
-if(MSVC)
-    target_compile_options(greetings PRIVATE /W4)
-endif()
+# Add compiler warnings and optimization flags for Linux
+# -Wall: Enable all common warnings
+# -Wextra: Enable extra warnings for stricter code checking
+# -O2: Medium optimization level for better performance
+target_compile_options(greetings PRIVATE -Wall -Wextra -O2)
