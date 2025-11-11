@@ -52,6 +52,3 @@ extern "C" {
         return env->NewStringUTF(greeting.c_str());
     }
 }
-        return env->NewStringUTF(greeting.c_str());
-    }
-}

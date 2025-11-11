@@ -81,9 +81,11 @@ model {
                     source {
                         // Source code directory for C++ files
                         srcDir "src/main/cpp"
-                        // Only include greetings.cpp (Gradle version)
-                        // greetings_cmake.cpp is compiled separately by CMake
-                        include "**/greetings.cpp"
+                        // Include BOTH source files:
+                        // - greetings.cpp: Gradle C++ Plugin version with greetingFromGradle()
+                        // - greetings_cmake.cpp: CMake version with greetingFromCMake()
+                        // Both compile into the same shared library
+                        include "**/greetings.cpp", "**/greetings_cmake.cpp"
                     }
                 }
             }

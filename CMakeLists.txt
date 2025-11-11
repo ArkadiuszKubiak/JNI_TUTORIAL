@@ -15,10 +15,13 @@ message(STATUS "JNI Include dirs: ${JNI_INCLUDE_DIRS}")
 message(STATUS "JNI Libraries: ${JNI_LIBRARIES}")
 
 # ==================== CREATE SHARED LIBRARY ====================
-# Add the native library 'greetings' with source file
-# Uses greetings_cmake.cpp (the CMake version of the native code)
-# Creates a shared library (.so on Linux)
+# Add the native library 'greetings' with source files
+# Compiles BOTH source files into one shared library:
+# - greetings.cpp: Contains greetingFromGradle() implementation
+# - greetings_cmake.cpp: Contains greetingFromCMake() implementation
+# Creates a shared library (.so on Linux) containing both functions
 add_library(greetings SHARED
+    app/src/main/cpp/greetings.cpp
     app/src/main/cpp/greetings_cmake.cpp
 )
 
