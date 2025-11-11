@@ -45,20 +45,24 @@ tasks.named('test') {
     // Use JUnit Platform for running tests (required for JUnit 5)
     useJUnitPlatform()
     
+    // Ensure CMake library is built before tests run
+    dependsOn buildNativeWithCMake
+    
     // Set java.library.path to find BOTH native libraries
-    // Gradle version: build/libs/greetings/shared/
-    // CMake version: build_cmake/lib/
-    systemProperty 'java.library.path', "${buildDir}/libs/greetings/shared:${rootProject.projectDir}/build_cmake/lib"
+    // Gradle library: build/libs/greetingsGradle/shared/libgreetingsGradle.so
+    // CMake library: build_cmake/lib/libgreetingsCMake.so
+    systemProperty 'java.library.path', "${buildDir}/libs/greetingsGradle/shared:${rootProject.projectDir}/build_cmake/lib"
     
     // Enable native access for JNI (required in Java 19+)
     jvmArgs '--enable-native-access=ALL-UNNAMED'
 }
 
 // ==================== CMAKE BUILD TASK ====================
-// Compile CMake version of native library (greetings_cmake.cpp)
+// Compile CMake version of native library (greetings_cmake.cpp only)
 // This runs BEFORE the main build to compile the CMake version
+// Output: libgreetingsCMake.so (built by CMake, independent library)
 task buildNativeWithCMake(type: Exec) {
-    description = 'Build CMake version of native library'
+    description = 'Build CMake version of native library (libgreetingsCMake.so)'
     workingDir = rootProject.projectDir
     commandLine "bash", "-c", """
         mkdir -p build_cmake
@@ -70,22 +74,30 @@ task buildNativeWithCMake(type: Exec) {
 
 // ==================== NATIVE C++ LIBRARY CONFIGURATION ====================
 // Define how to compile the native C++ greetings library using Gradle C++ plugin
+// GRADLE VERSION ONLY - Compiles greetings.cpp into libgreetingsGradle.so
 // The model block configures the build using Gradle's native build model
+// 
+// Note: CMake has its own separate source file (greetings_cmake.cpp) and builds
+// its own library (libgreetingsCMake.so) via the buildNativeWithCMake task above
 model {
     // Define the components (libraries) to build
     components {
-        // Define a native library named 'greetings'
-        greetings(NativeLibrarySpec) {
+        // Define a native library named 'greetingsGradle'
+        // Output library name: libgreetingsGradle.so (Linux)
+        // This is loaded in Java via: System.loadLibrary("greetingsGradle")
+        greetingsGradle(NativeLibrarySpec) {
             sources {
                 cpp {
                     source {
                         // Source code directory for C++ files
                         srcDir "src/main/cpp"
-                        // Include BOTH source files:
-                        // - greetings.cpp: Gradle C++ Plugin version with greetingFromGradle()
-                        // - greetings_cmake.cpp: CMake version with greetingFromCMake()
-                        // Both compile into the same shared library
-                        include "**/greetings.cpp", "**/greetings_cmake.cpp"
+                        // Include ONLY greetings.cpp - this is Gradle's exclusive source file
+                        // greetings.cpp contains: Java_org_example_App_greetingFromGradle()
+                        // 
+                        // NOTE: We do NOT include greetings_cmake.cpp here!
+                        // The CMake build system handles greetings_cmake.cpp separately
+                        // and creates its own library: libgreetingsCMake.so
+                        include "**/greetings.cpp"
                     }
                 }
             }
@@ -97,6 +109,7 @@ model {
         all {
             // C++ compiler flags:
             // -fPIC: Generate position-independent code (required for shared libraries)
+            // Compiler flags for creating the Gradle version library
             cppCompiler.args "-fPIC", 
                 // Add JNI include directories for jni.h header file
                 "-I/usr/lib/jvm/default-java/include",
@@ -119,9 +132,13 @@ build.dependsOn buildNativeWithCMake
 // ==================== JAVA EXECUTION CONFIGURATION ====================
 // Configure how Java code is executed (for ./gradlew run)
 // Must set java.library.path to find BOTH native libraries
+// 
+// Library paths:
+// 1. Gradle library: build/libs/greetingsGradle/shared/ → libgreetingsGradle.so
+// 2. CMake library: build_cmake/lib/ → libgreetingsCMake.so
 tasks.withType(JavaExec) {
     // Set java.library.path to find both Gradle and CMake compiled libraries
-    systemProperty 'java.library.path', "${buildDir}/libs/greetings/shared:${rootProject.projectDir}/build_cmake/lib"
+    systemProperty 'java.library.path', "${buildDir}/libs/greetingsGradle/shared:${rootProject.projectDir}/build_cmake/lib"
     
     // Enable native access for JNI (required in Java 19+)
     jvmArgs '--enable-native-access=ALL-UNNAMED'

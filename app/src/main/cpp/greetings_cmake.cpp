@@ -3,14 +3,16 @@
 #include <iostream>
 
 /**
- * Native C++ implementation of the greetingFromCMake() method
- * This file is compiled using the CMake build system
+ * Native C++ implementation of the greetingFromCMake() method.
+ * This file is compiled using the CMake build system only.
  * 
  * File: greetings_cmake.cpp
- * Build System: CMake
- * Compilation: CMakeLists.txt configuration
- * Output Library: libgreetings.so (Linux)
+ * Build System: CMake (EXCLUSIVE to this library)
+ * Output Library: libgreetingsCMake.so (Linux)
  * Method: greetingFromCMake() - CMake-specific implementation
+ * 
+ * Note: This source file is compiled ONLY into libgreetingsCMake.so.
+ * The Gradle C++ plugin has its own separate source file (greetings.cpp).
  */
 
 /**
@@ -35,6 +37,9 @@
  *   2. Prints the message to console using std::cout (demonstrates C++ STL)
  *   3. Converts the C++ string to a Java jstring using NewStringUTF
  *   4. Returns the Java string to the caller
+ * 
+ * Library: libgreetingsCMake.so
+ * Built by: CMake (CMakeLists.txt)
  */
 extern "C" {
     JNIEXPORT jstring JNICALL Java_org_example_App_greetingFromCMake(JNIEnv *env, jobject obj)

@@ -6,28 +6,48 @@ package org.example;
 public class App {
     /**
      * Static initializer - runs when the App class is loaded into memory.
-     * Loads the native library 'greetings' into the JVM.
-     * The library name 'greetings' maps to libgreetings.so on Linux.
-     * This must be called before any native methods can be invoked.
+     * Loads TWO SEPARATE native libraries:
+     * 1. libgreetingsGradle.so - Contains greetingFromGradle() function
+     * 2. libgreetingsCMake.so - Contains greetingFromCMake() function
+     * 
+     * Each library is built by a different build system:
+     * - libgreetingsGradle.so: Built by Gradle C++ Plugin (app/build.gradle)
+     * - libgreetingsCMake.so: Built by CMake (CMakeLists.txt)
+     * 
+     * Library names map to:
+     * - 'greetingsGradle' → libgreetingsGradle.so on Linux
+     * - 'greetingsCMake' → libgreetingsCMake.so on Linux
+     * 
+     * Both must be loaded before native methods can be invoked.
      */
     static {
-        System.loadLibrary("greetings");
+        // Load Gradle-compiled library (contains greetingFromGradle function)
+        System.loadLibrary("greetingsGradle");
+        
+        // Load CMake-compiled library (contains greetingFromCMake function)
+        System.loadLibrary("greetingsCMake");
     }
 
-        /**
+    /**
      * Native method compiled by Gradle C++ plugin.
-     * Implementation is in app/src/main/cpp/greetings.cpp
+     * Implementation: app/src/main/cpp/greetings.cpp
+     * Library: libgreetingsGradle.so (built by Gradle)
+     * 
      * JNI automatically maps this method to the C++ function:
      * Java_org_example_App_greetingFromGradle()
+     * 
      * @return greeting message from Gradle-compiled C++ code
      */
     public native String greetingFromGradle();
 
     /**
      * Native method compiled by CMake build system.
-     * Implementation is in app/src/main/cpp/greetings_cmake.cpp
+     * Implementation: app/src/main/cpp/greetings_cmake.cpp
+     * Library: libgreetingsCMake.so (built by CMake)
+     * 
      * JNI automatically maps this method to the C++ function:
      * Java_org_example_App_greetingFromCMake()
+     * 
      * @return greeting message from CMake-compiled C++ code
      */
     public native String greetingFromCMake();
