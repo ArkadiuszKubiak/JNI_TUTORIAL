@@ -1,0 +1,50 @@
+# Gradle
+build/
+.gradle/
+*.gradle
+gradle-app.setting
+!gradle-wrapper.jar
+.gradletasknamecache
+
+# CMake
+build_cmake/
+CMakeFiles/
+cmake_install.cmake
+CMakeCache.txt
+CMakeUserPresets.json
+Makefile
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+*.iml
+*.classpath
+*.project
+*.settings/
+
+# Build outputs
+*.class
+*.jar
+*.war
+*.ear
+*.so
+*.dylib
+*.dll
+
+# Test reports
+test-results/
+reports/
+
+# System
+.env
+.env.local
+*.log
+
+# OS specific
+Thumbs.db
+.AppleDouble
+.LSOverride

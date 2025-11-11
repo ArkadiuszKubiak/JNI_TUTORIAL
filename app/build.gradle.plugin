@@ -1,0 +1,106 @@
+// ==================== GRADLE PLUGINS ====================
+// Apply plugins to support Java application and C++ native code compilation
+// Note: This is a backup configuration file for the Gradle C++ Plugin approach
+// To use this, copy to app/build.gradle: cp app/build.gradle.plugin app/build.gradle
+plugins {
+    id 'application'  // Plugin for building runnable Java applications
+    id 'cpp'          // Gradle C++ plugin for compiling native code
+}
+
+// ==================== DEPENDENCY REPOSITORIES ====================
+// Configure where to download project dependencies from
+repositories {
+    // Use Maven Central Repository for Java libraries
+    mavenCentral()
+}
+
+// ==================== JAVA DEPENDENCIES ====================
+// Define test and runtime dependencies
+dependencies {
+    // JUnit 5 (Jupiter) for unit testing
+    testImplementation libs.junit.jupiter
+    
+    // JUnit Platform launcher for running tests
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+// ==================== JAVA TOOLCHAIN CONFIGURATION ====================
+// Configure which Java version to use for compilation
+java {
+    toolchain {
+        // Use Java 25 for compilation and runtime
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+// ==================== APPLICATION CONFIGURATION ====================
+// Configure the main application entry point
+application {
+    // Specify the main class to run when ./gradlew run is executed
+    mainClass = 'org.example.App'
+}
+
+// ==================== TEST CONFIGURATION ====================
+// Configure how unit tests are executed
+tasks.named('test') {
+    // Use JUnit Platform for running tests (required for JUnit 5)
+    useJUnitPlatform()
+    
+    // Set java.library.path to find native libraries (libgreetings.so)
+    // This path points to where the compiled C++ library is located
+    systemProperty 'java.library.path', "${buildDir}/libs/greetings/shared"
+    
+    // Enable native access for JNI (required in Java 19+)
+    jvmArgs '--enable-native-access=ALL-UNNAMED'
+}
+
+// ==================== NATIVE C++ LIBRARY CONFIGURATION ====================
+// Define how to compile the native C++ greetings library using Gradle C++ plugin
+// The model block configures the build using Gradle's native build model
+model {
+    // Define the components (libraries) to build
+    components {
+        // Define a native library named 'greetings'
+        greetings(NativeLibrarySpec) {
+            sources {
+                cpp {
+                    source {
+                        // Source code directory for C++ files
+                        srcDir "src/main/cpp"
+                        // Only include greetings.cpp (not greetings_cmake.cpp which is for CMake builds)
+                        include "**/greetings.cpp"  // Only greetings.cpp, not greetings_cmake.cpp
+                    }
+                }
+            }
+        }
+    }
+    
+    // Configure compilation settings for all native binaries
+    binaries {
+        all {
+            // C++ compiler flags:
+            // -fPIC: Generate position-independent code (required for shared libraries)
+            cppCompiler.args "-fPIC", 
+                // Add JNI include directories for jni.h header file
+                "-I/usr/lib/jvm/default-java/include",
+                // Add platform-specific JNI headers (Linux version)
+                "-I/usr/lib/jvm/default-java/include/linux"
+            
+            // Linker flags:
+            // -L: Add directory to search for libraries
+            // -ljvm: Link with the JVM library (required for JNI functions)
+            linker.args "-L/usr/lib/jvm/default-java/lib/server", "-ljvm"
+        }
+    }
+}
+
+// ==================== JAVA EXECUTION CONFIGURATION ====================
+// Configure how Java code is executed (for ./gradlew run)
+tasks.withType(JavaExec) {
+    // Set java.library.path to find native libraries at runtime
+    // Points to the directory where libgreetings.so is compiled
+    systemProperty 'java.library.path', "${buildDir}/libs/greetings/shared"
+    
+    // Enable native access for JNI (required in Java 19+)
+    jvmArgs '--enable-native-access=ALL-UNNAMED'
+}
