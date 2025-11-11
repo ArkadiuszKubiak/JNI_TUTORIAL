@@ -3,24 +3,25 @@
 #include <iostream>
 
 /**
- * Native C++ implementation of the greetings() method
+ * Native C++ implementation of the greetingFromGradle() method
  * This file is compiled using the Gradle C++ plugin
  * 
  * File: greetings.cpp
- * Build System: Gradle C++ Plugin (default)
+ * Build System: Gradle C++ Plugin
  * Compilation: app/build.gradle model configuration
  * Output Library: libgreetings.so (Linux)
+ * Method: greetingFromGradle() - Gradle-specific implementation
  */
 
 /**
- * Java_org_example_App_greetings
+ * Java_org_example_App_greetingFromGradle
  * 
  * JNI function name format: Java_<package>_<class>_<method>
  * Breakdown:
- *   - Java:         JNI prefix for all native functions
- *   - org_example:  Package name (dots replaced with underscores)
- *   - App:          Class name
- *   - greetings:    Method name
+ *   - Java:           JNI prefix for all native functions
+ *   - org_example:    Package name (dots replaced with underscores)
+ *   - App:            Class name
+ *   - greetingFromGradle: Method name
  * 
  * Parameters:
  *   - JNIEnv *env:  Pointer to JNI environment, provides access to JNI functions
@@ -36,18 +37,21 @@
  *   4. Returns the Java string to the caller
  */
 extern "C" {
-    JNIEXPORT jstring JNICALL Java_org_example_App_greetings(JNIEnv *env, jobject obj)
+    JNIEXPORT jstring JNICALL Java_org_example_App_greetingFromGradle(JNIEnv *env, jobject obj)
     {
-        // Create C++ string with greeting message
-        std::string greeting = "Greetings from native C++ code!";
+        // Create C++ string with greeting message (Gradle version)
+        std::string greeting = "Hello from Gradle C++ Plugin!";
         
         // Print message to standard output using C++ Standard Library
         // This demonstrates that we can use C++ features in JNI code
-        std::cout << "Message from C++ STL: " << greeting << std::endl;
+        std::cout << "[Gradle] " << greeting << std::endl;
         
         // Convert C++ string to Java string (jstring)
         // NewStringUTF creates a new Java string from a UTF-8 C string
         // greeting.c_str() converts std::string to const char* pointer
+        return env->NewStringUTF(greeting.c_str());
+    }
+}
         return env->NewStringUTF(greeting.c_str());
     }
 }

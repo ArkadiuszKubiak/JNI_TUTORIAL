@@ -14,16 +14,23 @@ public class App {
         System.loadLibrary("greetings");
     }
 
-    /**
-     * Native method declaration
-     * This method is implemented in C++ and linked at runtime
-     * The actual implementation is in:
-     * - app/src/main/cpp/greetings.cpp (for Gradle C++ plugin)
-     * - app/src/main/cpp/greetings_cmake.cpp (for CMake build system)
-     * 
-     * @return A greeting message from native C++ code
+        /**
+     * Native method compiled by Gradle C++ plugin.
+     * Implementation is in app/src/main/cpp/greetings.cpp
+     * JNI automatically maps this method to the C++ function:
+     * Java_org_example_App_greetingFromGradle()
+     * @return greeting message from Gradle-compiled C++ code
      */
-    public native String greetings();
+    public native String greetingFromGradle();
+
+    /**
+     * Native method compiled by CMake build system.
+     * Implementation is in app/src/main/cpp/greetings_cmake.cpp
+     * JNI automatically maps this method to the C++ function:
+     * Java_org_example_App_greetingFromCMake()
+     * @return greeting message from CMake-compiled C++ code
+     */
+    public native String greetingFromCMake();
 
     /**
      * Java implementation of a greeting method
@@ -37,14 +44,17 @@ public class App {
 
     /**
      * Application entry point
-     * Demonstrates calling both Java and native methods:
+     * Demonstrates calling both Java and native methods from both build systems:
      * 1. getGreeting() - Java method that returns "Hello World!"
-     * 2. greetings() - Native C++ method with JNI interface
+     * 2. greetingFromGradle() - Native method compiled by Gradle C++ plugin
+     * 3. greetingFromCMake() - Native method compiled by CMake build system
      * 
      * @param args Command line arguments (not used)
      */
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
-        System.out.println(new App().greetings());
+        App app = new App();
+        System.out.println(app.getGreeting());
+        System.out.println(app.greetingFromGradle());
+        System.out.println(app.greetingFromCMake());
     }
 }

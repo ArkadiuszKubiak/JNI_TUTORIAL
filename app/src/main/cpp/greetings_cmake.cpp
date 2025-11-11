@@ -3,24 +3,25 @@
 #include <iostream>
 
 /**
- * Native C++ implementation of the greetings() method
- * This file is compiled using CMake build system
+ * Native C++ implementation of the greetingFromCMake() method
+ * This file is compiled using the CMake build system
  * 
  * File: greetings_cmake.cpp
- * Build System: CMake (alternative to Gradle C++ plugin)
+ * Build System: CMake
  * Compilation: CMakeLists.txt configuration
  * Output Library: libgreetings.so (Linux)
+ * Method: greetingFromCMake() - CMake-specific implementation
  */
 
 /**
- * Java_org_example_App_greetings
+ * Java_org_example_App_greetingFromCMake
  * 
  * JNI function name format: Java_<package>_<class>_<method>
  * Breakdown:
- *   - Java:         JNI prefix for all native functions
- *   - org_example:  Package name (dots replaced with underscores)
- *   - App:          Class name
- *   - greetings:    Method name
+ *   - Java:           JNI prefix for all native functions
+ *   - org_example:    Package name (dots replaced with underscores)
+ *   - App:            Class name
+ *   - greetingFromCMake: Method name
  * 
  * Parameters:
  *   - JNIEnv *env:  Pointer to JNI environment, provides access to JNI functions
@@ -31,19 +32,17 @@
  * 
  * Functionality:
  *   1. Creates a C++ std::string with the greeting message
- *   2. Prints the message to console with "[CMake]" prefix (distinguishes from Gradle version)
+ *   2. Prints the message to console using std::cout (demonstrates C++ STL)
  *   3. Converts the C++ string to a Java jstring using NewStringUTF
  *   4. Returns the Java string to the caller
- * 
- * Note: This is the CMake version with [CMake] prefix in output
  */
 extern "C" {
-    JNIEXPORT jstring JNICALL Java_org_example_App_greetings(JNIEnv *env, jobject obj)
+    JNIEXPORT jstring JNICALL Java_org_example_App_greetingFromCMake(JNIEnv *env, jobject obj)
     {
-        // Create C++ string with greeting message specific to CMake build
-        std::string greeting = "Greetings from CMake C++ code!";
+        // Create C++ string with greeting message (CMake version)
+        std::string greeting = "Hello from CMake Build System!";
         
-        // Print message to standard output with CMake prefix to distinguish from Gradle version
+        // Print message to standard output using C++ Standard Library
         // This demonstrates that we can use C++ features in JNI code
         std::cout << "[CMake] " << greeting << std::endl;
         

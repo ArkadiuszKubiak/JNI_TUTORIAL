@@ -26,21 +26,40 @@ class AppTest {
     }
 
     /**
-     * Test native method greetings()
+     * Test Gradle-compiled native method greetingFromGradle()
      * 
      * Verifies that:
-     * 1. Native library (libgreetings.so) is loaded correctly
-     * 2. greetings() JNI method is callable from Java
+     * 1. Native library (libgreetings.so) compiled by Gradle is loaded correctly
+     * 2. greetingFromGradle() JNI method is callable from Java
      * 3. Native method returns a non-null value
-     * 4. Native method returns a string mentioning "C++" (to distinguish from Java implementation)
+     * 4. Native method returns a string mentioning "Gradle"
      * 
-     * This test ensures the JNI bridge between Java and C++ is working correctly
+     * This test ensures the JNI bridge between Java and Gradle C++ code is working
      */
     @Test
-    void appHasNativeGreeting() {
+    void appHasGradleNativeGreeting() {
         App app = new App();
-        String nativeGreeting = app.greetings();
-        assertNotNull(nativeGreeting, "app should have a native greeting");
-        assertTrue(nativeGreeting.contains("C++"), "native greeting should mention C++");
+        String nativeGreeting = app.greetingFromGradle();
+        assertNotNull(nativeGreeting, "app should have a Gradle native greeting");
+        assertTrue(nativeGreeting.contains("Gradle"), "native greeting should mention Gradle");
+    }
+
+    /**
+     * Test CMake-compiled native method greetingFromCMake()
+     * 
+     * Verifies that:
+     * 1. Native library (libgreetings.so) compiled by CMake is loaded correctly
+     * 2. greetingFromCMake() JNI method is callable from Java
+     * 3. Native method returns a non-null value
+     * 4. Native method returns a string mentioning "CMake"
+     * 
+     * This test ensures the JNI bridge between Java and CMake C++ code is working
+     */
+    @Test
+    void appHasCMakeNativeGreeting() {
+        App app = new App();
+        String nativeGreeting = app.greetingFromCMake();
+        assertNotNull(nativeGreeting, "app should have a CMake native greeting");
+        assertTrue(nativeGreeting.contains("CMake"), "native greeting should mention CMake");
     }
 }
