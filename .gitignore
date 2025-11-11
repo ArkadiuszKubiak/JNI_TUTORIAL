@@ -1,7 +1,6 @@
 # Gradle
 build/
 .gradle/
-*.gradle
 gradle-app.setting
 !gradle-wrapper.jar
 .gradletasknamecache
