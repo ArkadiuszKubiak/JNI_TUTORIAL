@@ -346,33 +346,6 @@ Tests completed: 3 passed
 
 ---
 
-## 🎯 Architecture Comparison
-
-### Before (Single Library)
-```
-Java App
-  ├─ greetingFromGradle() → libgreetings.so (contained both functions)
-  └─ greetingFromCMake()
-```
-
-### Now (Two Separate Libraries) ✨
-```
-Java App
-  ├─ System.loadLibrary("greetingsGradle") → libgreetingsGradle.so
-  │  └─ greetingFromGradle()
-  └─ System.loadLibrary("greetingsCMake") → libgreetingsCMake.so
-     └─ greetingFromCMake()
-```
-
-**Benefits:**
-- ✅ Clear separation of concerns
-- ✅ Independent compilation paths
-- ✅ Easier to understand and modify
-- ✅ Can swap build systems without affecting other code
-- ✅ Demonstrates advanced JNI multi-library loading
-
----
-
 ## 🔍 JNI Concepts Used
 
 ### 1. **Native Library Loading**
@@ -433,39 +406,7 @@ BUILD SUCCESSFUL in 587ms
 
 ---
 
-## 🚨 Troubleshooting
-
-### Error: `UnsatisfiedLinkError: no greetingsCMake in java.library.path`
-**Solution**: Ensure CMake build runs before tests:
-```groovy
-tasks.named('test') {
-    dependsOn buildNativeWithCMake
-    systemProperty 'java.library.path', "${buildDir}/libs/greetingsGradle/shared:${rootProject.projectDir}/build_cmake/lib"
-}
-```
-
-### Error: `UnsatisfiedLinkError: no greetingsGradle in java.library.path`
-**Solution**: Check Gradle library name in build.gradle:
-```groovy
-greetingsGradle(NativeLibrarySpec) {  // Must be "greetingsGradle"
-```
-
-### Error: CMake not found
-**Solution**: Install CMake:
-```bash
-sudo apt-get install cmake   # Ubuntu/Debian
-brew install cmake           # macOS
-```
-
-### Error: JNI headers not found
-**Solution**: Gradle automatically handles JNI includes. For CMake, ensure:
-```bash
-find /usr/lib/jvm/default-java/include -name "jni.h"
-```
-
----
-
-## 📚 Learning Resources
+##  Learning Resources
 
 ### JNI Documentation
 - [Oracle JNI Documentation](https://docs.oracle.com/en/java/javase/17/docs/specs/jni/index.html)
