@@ -5,9 +5,10 @@ package org.example;
 
 public class App {
     /**
-     * Static initializer block that loads the native 'greetings' library
-     * This library contains the C++ implementation of the greetings() method
-     * The library name 'greetings' maps to libgreetings.so (Linux) or greetings.dll (Windows)
+     * Static initializer - runs when the App class is loaded into memory.
+     * Loads the native library 'greetings' into the JVM.
+     * The library name 'greetings' maps to libgreetings.so on Linux.
+     * This must be called before any native methods can be invoked.
      */
     static {
         System.loadLibrary("greetings");

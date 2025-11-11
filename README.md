@@ -40,7 +40,7 @@ lib-from-scratch/
 ├── build.gradle.cmake                          # Alternative CMake-based Gradle configuration
 ├── settings.gradle                             # Gradle settings
 ├── gradle.properties                           # Gradle global properties
-├── gradlew & gradlew.bat                       # Gradle wrapper executables
+├── gradlew                                     # Gradle wrapper executable (Linux/macOS)
 └── README.md                                   # This file
 ```
 
@@ -190,9 +190,8 @@ tasks.named('test') {
 
 ### What is CMake?
 
-CMake is an independent, industry-standard build system that generates platform-specific build files (Makefiles, Visual Studio projects, etc.). It provides:
+CMake is an independent, industry-standard build system that generates platform-specific build files (Makefiles, etc.). It provides:
 - **Complete independence** - Can be used without Gradle for C++ projects
-- **Platform flexibility** - Works on Linux, macOS, Windows with native tools
 - **Better debugging** - More detailed control over compilation process
 - **Reusable** - CMake scripts can be used in other projects
 - **Industry standard** - Widely used in C++ ecosystem
@@ -333,8 +332,6 @@ JNIEXPORT jstring JNICALL Java_org_example_App_greetings(JNIEnv *env, jobject ob
 ✅ **Independent** - Works without Gradle in any C++ project  
 ✅ **Standard tool** - Used across industry for C++ projects  
 ✅ **Better debugging** - More control over compilation process  
-✅ **Platform portable** - Same CMakeLists.txt on Linux, macOS, Windows  
-✅ **Better error messages** - More detailed compilation diagnostics  
 ✅ **Reusable** - CMake scripts can be used in other projects  
 
 ### Test Execution (CMake)
@@ -562,7 +559,7 @@ junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.r
 
 **Required:**
 - **Java Development Kit (JDK) 25** - For Java compilation and JNI headers
-- **C++ Compiler** - GCC (Linux), Clang (macOS), MSVC (Windows)
+- **C++ Compiler** - GCC (Linux) or Clang (macOS)
 
 **Optional (for CMake system):**
 - **CMake 3.10+** - For CMake-based compilation
@@ -589,8 +586,6 @@ xcode-select --install
 # Install CMake (if using CMake system)
 brew install cmake
 ```
-
----
 
 ## 🔗 JNI Function Naming Convention
 

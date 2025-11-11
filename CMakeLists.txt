@@ -17,7 +17,7 @@ message(STATUS "JNI Libraries: ${JNI_LIBRARIES}")
 # ==================== CREATE SHARED LIBRARY ====================
 # Add the native library 'greetings' with source file
 # Uses greetings_cmake.cpp (the CMake version of the native code)
-# Creates a shared library (.so on Linux, .dll on Windows)
+# Creates a shared library (.so on Linux)
 add_library(greetings SHARED
     app/src/main/cpp/greetings_cmake.cpp
 )
